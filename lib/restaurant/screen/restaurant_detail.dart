@@ -22,29 +22,10 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             /* app bar */
 
-            // Container(
-            //   width: double.infinity,
-            //   height: 200,
-            //   margin: const EdgeInsets.all(10),
-            //   decoration: BoxDecoration(
-            //     shape: BoxShape.rectangle,
-            //     color: Colors.grey[200],
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: Center(
-            //     child: Image.asset(
-            //       'assets/fast-food.png',
-            //       width: 90,
-            //       height: 90,
-            //       fit: BoxFit.contain,
-            //     ),
-            //   ),
-            // ),
             Hero(
               tag: widget.data.image,
               child: Padding(
@@ -166,14 +147,12 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                 })
               ],
             ),
-            Expanded(
-              child: IndexedStack(
-                index: selectedIndex,
-                children: [
-                  _buildFoodList(),
-                  _buildDrinksList(),
-                ],
-              ),
+            IndexedStack(
+              index: selectedIndex,
+              children: [
+                _buildFoodList(),
+                _buildDrinksList(),
+              ],
             )
           ],
         ),

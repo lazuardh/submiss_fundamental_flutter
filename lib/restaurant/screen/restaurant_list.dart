@@ -41,26 +41,22 @@ class RestaurantList extends StatelessWidget {
             itemCount: restaurants.length,
             padding: const EdgeInsets.all(20),
             itemBuilder: (context, index) {
-              return Hero(
-                tag: restaurants[index].pictureId,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/detailRestaurant',
-                      arguments: RestaurantParams(
-                          image: restaurants[index].pictureId,
-                          name: restaurants[index].name,
-                          location: restaurants[index].city,
-                          rating: restaurants[index].rating,
-                          description: restaurants[index].description,
-                          menu: restaurants[index].menus != null
-                              ? restaurants[index].menus
-                              : Menus(foods: [], drinks: [])),
-                    );
-                  },
-                  child: _buildRestaurantItem(context, restaurants[index]),
-                ),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/detailRestaurant',
+                    arguments: RestaurantParams(
+                      image: restaurants[index].pictureId,
+                      name: restaurants[index].name,
+                      location: restaurants[index].city,
+                      rating: restaurants[index].rating,
+                      description: restaurants[index].description,
+                      menu: restaurants[index].menus,
+                    ),
+                  );
+                },
+                child: _buildRestaurantItem(context, restaurants[index]),
               );
             },
           );
@@ -79,29 +75,16 @@ class RestaurantList extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              restaurant.pictureId,
-              width: 90,
-              height: 80,
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: restaurant.pictureId,
+              child: Image.network(
+                restaurant.pictureId,
+                width: 90,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          // Container(
-          //   width: 90,
-          //   decoration: BoxDecoration(
-          //     shape: BoxShape.rectangle,
-          //     color: Colors.grey[200],
-          //     borderRadius: BorderRadius.circular(10),
-          //   ),
-          //   child: Center(
-          //     child: Image.asset(
-          //       'assets/fast-food.png',
-          //       width: 40,
-          //       height: 40,
-          //       fit: BoxFit.contain,
-          //     ),
-          //   ),
-          // ),
           const SizedBox(width: 15),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
