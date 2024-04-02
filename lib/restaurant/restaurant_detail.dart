@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:submiss1_fundamental/restaurant/params/restaurant_params.dart';
+import 'package:submiss1_fundamental/restaurant/ui/params/restaurant_params.dart';
 
-import '../../utils/color.dart';
-import '../../utils/fonts_utils.dart';
-import '../../utils/size.dart';
+import '../../../utils/color.dart';
+import '../../../utils/fonts_utils.dart';
+import '../../../utils/size.dart';
 
 class RestaurantDetail extends StatefulWidget {
   final RestaurantParams data;

@@ -1,4 +1,4 @@
-import '../model/restaurant_model.dart';
+import '../../data/model/restaurant_model.dart';
 
 class RestaurantParams {
   final String image;

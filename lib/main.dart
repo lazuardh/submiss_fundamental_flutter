@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:submiss1_fundamental/restaurant/params/restaurant_params.dart';
-import 'package:submiss1_fundamental/restaurant/screen/restaurant_detail.dart';
-import 'package:submiss1_fundamental/restaurant/screen/restaurant_list.dart';
+
+import 'restaurant/ui/params/restaurant_params.dart';
+import 'restaurant/ui/screen/restaurant_detail.dart';
+import 'restaurant/ui/screen/restaurant_list.dart';
 
 void main() {
   runApp(const MyApp());

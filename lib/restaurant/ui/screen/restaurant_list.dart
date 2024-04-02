@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:submiss1_fundamental/restaurant/model/restaurant_model.dart';
-import 'package:submiss1_fundamental/restaurant/params/restaurant_params.dart';
+import 'package:submiss1_fundamental/restaurant/data/model/restaurant_model.dart';
+import 'package:submiss1_fundamental/restaurant/ui/params/restaurant_params.dart';
 import 'package:submiss1_fundamental/utils/color.dart';
 import 'package:submiss1_fundamental/utils/fonts_utils.dart';
 import 'package:submiss1_fundamental/utils/size.dart';
