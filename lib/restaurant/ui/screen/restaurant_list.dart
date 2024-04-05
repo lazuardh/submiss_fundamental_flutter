@@ -1,22 +1,49 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:submiss1_fundamental/restaurant/data/model/restaurant_model.dart';
-import 'package:submiss1_fundamental/restaurant/ui/params/restaurant_params.dart';
-import 'package:submiss1_fundamental/utils/color.dart';
+import 'package:provider/provider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_provider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/widgets/connection.dart';
+import 'package:submiss1_fundamental/restaurant/ui/widgets/platform_widget.dart';
 import 'package:submiss1_fundamental/utils/fonts_utils.dart';
 import 'package:submiss1_fundamental/utils/size.dart';
 
-class RestaurantList extends StatelessWidget {
+import '../widgets/restaurant_item.dart';
+
+class RestaurantList extends StatefulWidget {
   const RestaurantList({super.key});
 
   @override
+  State<RestaurantList> createState() => _RestaurantListState();
+}
+
+class _RestaurantListState extends State<RestaurantList> {
+  @override
   Widget build(BuildContext context) {
+    return Connection(
+      child: PlatformWidget(
+        androidBuilder: _buildAndroid,
+        iosBuilder: _buildIos,
+      ),
+    );
+  }
+
+  Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        toolbarHeight: 120,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () => Navigator.pushNamed(context, '/search'),
+                icon: const Icon(Icons.search),
+              ),
+            ),
             Text(
               "Restaurant",
               style: AppTextStyle.medium.copyWith(
@@ -32,110 +59,82 @@ class RestaurantList extends StatelessWidget {
           ],
         ),
       ),
-      body: FutureBuilder<String>(
-        future:
-            DefaultAssetBundle.of(context).loadString('assets/restaurant.json'),
-        builder: (context, snapshot) {
-          final List<Restaurant> restaurants = parseRestaurant(snapshot.data);
-          return ListView.builder(
-            itemCount: restaurants.length,
-            padding: const EdgeInsets.all(20),
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/detailRestaurant',
-                    arguments: RestaurantParams(
-                      image: restaurants[index].pictureId,
-                      name: restaurants[index].name,
-                      location: restaurants[index].city,
-                      rating: restaurants[index].rating,
-                      description: restaurants[index].description,
-                      menu: restaurants[index].menus,
-                    ),
-                  );
-                },
-                child: _buildRestaurantItem(context, restaurants[index]),
-              );
-            },
-          );
-        },
-      ),
+      body: _buildList(),
     );
   }
 
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    return Container(
-      width: double.infinity,
-      height: 90,
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Hero(
-              tag: restaurant.pictureId,
-              child: Image.network(
-                restaurant.pictureId,
-                width: 90,
-                height: 80,
-                fit: BoxFit.cover,
+  Widget _buildIos(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: Colors.transparent,
+        middle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () => Navigator.pushNamed(context, '/search'),
+                icon: const Icon(Icons.search),
               ),
             ),
-          ),
-          const SizedBox(width: 15),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                restaurant.name,
-                style: AppTextStyle.medium.copyWith(
-                  fontSize: AppFontSize.large,
-                ),
+            Text(
+              "Restaurant",
+              style: AppTextStyle.medium.copyWith(
+                fontSize: AppFontSize.big,
               ),
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 15,
-                    color: AppColors.greyDarker,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    restaurant.city,
-                    style: AppTextStyle.medium.copyWith(
-                      fontSize: AppFontSize.normal,
-                      color: AppColors.greyDarker,
-                    ),
-                  ),
-                ],
+            ),
+            Text(
+              "Recomendation restaurant for you!",
+              style: AppTextStyle.medium.copyWith(
+                fontSize: AppFontSize.medium,
               ),
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.star,
-                    size: 15,
-                    color: Colors.amber,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    restaurant.rating.toString(),
-                    style: AppTextStyle.medium.copyWith(
-                      fontSize: AppFontSize.normal,
-                      color: AppColors.greyDarker,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          )
-        ],
+            ),
+          ],
+        ),
       ),
+      child: _buildList(),
+    );
+  }
+
+  Widget _buildList() {
+    return Consumer<RestaurantProvider>(
+      builder: (context, state, _) {
+        if (state.state == ResultState.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.state == ResultState.hasData) {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: state.result.restaurants.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  '/detailRestaurant',
+                  arguments: state.result.restaurants[index].id,
+                ),
+                child: RestaurantItem(
+                  restaurant: state.result.restaurants[index],
+                ),
+              );
+            },
+          );
+        } else if (state.state == ResultState.error) {
+          return Center(
+            child: Material(
+              child: Text(state.message),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Material(
+              child: Text(''),
+            ),
+          );
+        }
+      },
     );
   }
 }

@@ -1,41 +1,38 @@
-class Restaurant {
-  final bool error;
-  final String message;
-  final int count;
-  final List<RestaurantElement> restaurants;
+class RestaurantSearch {
+  bool error;
+  int founded;
+  List<RestaurantSearchElement> restaurants;
 
-  Restaurant({
+  RestaurantSearch({
     required this.error,
-    required this.message,
-    required this.count,
+    required this.founded,
     required this.restaurants,
   });
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
+  factory RestaurantSearch.fromJson(Map<String, dynamic> json) =>
+      RestaurantSearch(
         error: json["error"],
-        message: json["message"],
-        count: json["count"],
-        restaurants: List<RestaurantElement>.from(
-            json["restaurants"].map((x) => RestaurantElement.fromJson(x))),
+        founded: json["founded"],
+        restaurants: List<RestaurantSearchElement>.from(json["restaurants"]
+            .map((x) => RestaurantSearchElement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "error": error,
-        "message": message,
-        "count": count,
+        "founded": founded,
         "restaurants": List<dynamic>.from(restaurants.map((x) => x.toJson())),
       };
 }
 
-class RestaurantElement {
-  final String id;
-  final String name;
-  final String description;
-  final String pictureId;
-  final String city;
-  final double rating;
+class RestaurantSearchElement {
+  String id;
+  String name;
+  String description;
+  String pictureId;
+  String city;
+  double rating;
 
-  RestaurantElement({
+  RestaurantSearchElement({
     required this.id,
     required this.name,
     required this.description,
@@ -44,8 +41,8 @@ class RestaurantElement {
     required this.rating,
   });
 
-  factory RestaurantElement.fromJson(Map<String, dynamic> json) =>
-      RestaurantElement(
+  factory RestaurantSearchElement.fromJson(Map<String, dynamic> json) =>
+      RestaurantSearchElement(
         id: json["id"],
         name: json["name"],
         description: json["description"],

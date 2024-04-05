@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:submiss1_fundamental/restaurant/data/api/api_service.dart';
+import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_detail_provider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_provider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_search_rovider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/screen/search_screen.dart';
 
-import 'restaurant/ui/params/restaurant_params.dart';
 import 'restaurant/ui/screen/restaurant_detail.dart';
 import 'restaurant/ui/screen/restaurant_list.dart';
 
@@ -14,27 +19,38 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.cyan,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RestaurantProvider>(
+          create: (context) => RestaurantProvider(
+            apiService: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider<RestaurantSearchProvider>(
+          create: (context) => RestaurantSearchProvider(
+            apiService: ApiService(),
+          ),
+        ),
+        ChangeNotifierProvider<RestaurantDetailProvider>(
+          create: (context) => RestaurantDetailProvider(
+            apiService: ApiService(),
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.cyan,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const RestaurantList(),
+          '/search': (context) => const SearchScreen(),
+          '/detailRestaurant': (context) => RestaurantDetail(
+                id: ModalRoute.of(context)?.settings.arguments as String,
+              ),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const RestaurantList(),
-        '/detailRestaurant': (context) => RestaurantDetail(
-              ModalRoute.of(context)?.settings.arguments as RestaurantParams,
-            ),
-      },
     );
   }
 }
