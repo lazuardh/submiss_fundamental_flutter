@@ -22,7 +22,6 @@ class RestaurantDetail extends StatefulWidget {
 
 class _RestaurantDetailState extends State<RestaurantDetail> {
   final List<String> menus = ['Food', 'Drink'];
-  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -142,15 +141,13 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                   width: 160,
                                   child: TextButton(
                                     onPressed: () {
-                                      setState(() {
-                                        selectedIndex = index;
-                                      });
+                                      state.setSelectedIndex(index);
                                     },
                                     child: Text(
                                       menus[index],
                                       style: AppTextStyle.medium.copyWith(
                                         fontSize: AppFontSize.medium,
-                                        color: selectedIndex == index
+                                        color: state.selectedIndex == index
                                             ? Colors.amber
                                             : Colors.grey,
                                       ),
@@ -160,7 +157,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                 Container(
                                   width: 155,
                                   height: 3,
-                                  color: selectedIndex == index
+                                  color: index == state.selectedIndex
                                       ? Colors.grey
                                       : Colors.transparent,
                                 )
@@ -170,7 +167,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                         ],
                       ),
                       IndexedStack(
-                        index: selectedIndex,
+                        index: state.selectedIndex,
                         children: [
                           _buildFoodList(state),
                           _buildDrinksList(state),

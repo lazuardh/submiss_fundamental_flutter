@@ -8,6 +8,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
   final ApiService apiService;
 
   String id;
+  int selectedIndex = 0;
 
   RestaurantDetailProvider({
     required this.apiService,
@@ -20,12 +21,15 @@ class RestaurantDetailProvider extends ChangeNotifier {
   late ResultState _state;
 
   String _message = '';
-
   String get message => _message;
 
   RestaurantDetail get restaurantDetail => _restaurantDetail;
-
   ResultState get state => _state;
+
+  void setSelectedIndex(int index) {
+    selectedIndex = index;
+    notifyListeners();
+  }
 
   Future<void> _fetchRestaurantDetail(id) async {
     try {
