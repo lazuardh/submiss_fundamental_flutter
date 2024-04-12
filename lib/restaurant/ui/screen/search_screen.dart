@@ -69,26 +69,6 @@ class _SearchScreenState extends State<SearchScreen> {
               builder: (context, state, _) {
                 if (state.state == ResultState.loading) {
                   return const CircularProgressIndicator();
-                  // return FutureBuilder(
-                  //   future: Future.delayed(const Duration(seconds: 5)),
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.connectionState == ConnectionState.waiting) {
-                  //       return Center(
-                  //         child: Column(
-                  //           mainAxisAlignment: MainAxisAlignment.center,
-                  //           crossAxisAlignment: CrossAxisAlignment.center,
-                  //           children: const [
-                  //             Icon(Icons.search, size: 40),
-                  //             SizedBox(height: 10),
-                  //             Text('Finding restaurant for you. Please wait ...')
-                  //           ],
-                  //         ),
-                  //       );
-                  //     } else {
-                  //       return const SizedBox();
-                  //     }
-                  //   },
-                  // );
                 } else if (state.state == ResultState.hasData) {
                   if (state.query.isEmpty) {
                     return const Center(
@@ -100,8 +80,17 @@ class _SearchScreenState extends State<SearchScreen> {
                       shrinkWrap: true,
                       itemCount: state.restaurantSearch.founded,
                       itemBuilder: (context, index) {
-                        return RestaurantSearchItem(
-                          restaurant: state.restaurantSearch.restaurants[index],
+                        return GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            '/detailRestaurant',
+                            arguments:
+                                state.restaurantSearch.restaurants[index].id,
+                          ),
+                          child: RestaurantSearchItem(
+                            restaurant:
+                                state.restaurantSearch.restaurants[index],
+                          ),
                         );
                       },
                     ),

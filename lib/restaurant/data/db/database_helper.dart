@@ -1,4 +1,5 @@
 // import 'package:sqflite/sqflite.dart';
+// import 'package:submiss1_fundamental/restaurant/data/model/restaurant_model.dart';
 
 // class DatabaseHelper {
 //   static DatabaseHelper? _instance;
@@ -17,8 +18,15 @@
 //     var db = openDatabase(
 //       '$path/restaurant.db',
 //       onCreate: (db, version) async {
-//         await db
-//             .execute('''CREATE TABLE $_tbFavorit (url TEXT PRIMARY KEY,),''');
+//         await db.execute('''CREATE TABLE $_tbFavorit (
+//               id TEXT PRIMARY KEY,
+//               name TEXT,
+//               description TEXT,
+//               picturedId TEXT,
+//               city TEXT,
+//               rating int,
+//             )
+//           ''');
 //       },
 //       version: 1,
 //     );
@@ -31,5 +39,25 @@
 //     }
 
 //     return _database;
+//   }
+
+//   Future<void> insertFavorite(Restaurant restaurant) async {
+//     final db = await database;
+//     await db!.insert(_tbFavorit, restaurant.toJson());
+//   }
+
+//   Future<List<Restaurant>> getFavoriteRestaurant() async {
+//     final db = await database;
+//     List<Map<String, dynamic>> results = await db!.query(
+//       _tbFavorit,
+//       where: 'id = ?',
+//       whereArgs: [id],
+//     );
+
+//     if (results.isNotEmpty) {
+//       return results.first;
+//     } else {
+//       return {};
+//     }
 //   }
 // }
