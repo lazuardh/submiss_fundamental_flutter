@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submiss1_fundamental/restaurant/data/api/api_service.dart';
+import 'package:submiss1_fundamental/restaurant/data/db/database_helper.dart';
 import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_detail_provider.dart';
+import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_favorite.dart';
 import 'package:submiss1_fundamental/restaurant/ui/widgets/connection.dart';
 
 import '../../../../../utils/color.dart';
@@ -26,11 +28,19 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
   @override
   Widget build(BuildContext context) {
     return Connection(
-      child: ChangeNotifierProvider<RestaurantDetailProvider>(
-        create: (context) => RestaurantDetailProvider(
-          apiService: ApiService(),
-          id: widget.id,
-        ),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<FavoriteRestaurantProvider>(
+            create: (context) =>
+                FavoriteRestaurantProvider(databaseHelper: DatabaseHelper()),
+          ),
+          ChangeNotifierProvider<RestaurantDetailProvider>(
+            create: (context) => RestaurantDetailProvider(
+              apiService: ApiService(),
+              id: widget.id,
+            ),
+          ),
+        ],
         child: Consumer<RestaurantDetailProvider>(
           builder: (context, state, child) {
             if (state.state == ResultState.loading) {
@@ -42,6 +52,33 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
               );
             } else if (state.state == ResultState.hasData) {
               return Scaffold(
+                floatingActionButton: Consumer<FavoriteRestaurantProvider>(
+                  builder: (context, provider, child) => FutureBuilder<bool>(
+                    future: provider
+                        .isFavorited(state.restaurantDetail.restaurant.id),
+                    builder: (context, snapshot) {
+                      var isFavorites = snapshot.data ?? false;
+                      return FloatingActionButton.small(
+                        shape: const CircleBorder(),
+                        child: Icon(
+                          Icons.favorite,
+                          color: isFavorites ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () async {
+                          if (isFavorites) {
+                            provider.removeBookmark(
+                                state.restaurantDetail.restaurant.id);
+                          } else {
+                            provider.addFavorite(
+                                state.restaurantDetail.restaurant.id);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.endFloat,
                 body: SafeArea(
                   child: ListView(
                     children: [

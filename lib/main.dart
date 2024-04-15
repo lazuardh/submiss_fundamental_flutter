@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submiss1_fundamental/restaurant/data/api/api_service.dart';
+import 'package:submiss1_fundamental/restaurant/ui/pages/favorite_pages.dart';
+import 'package:submiss1_fundamental/restaurant/ui/pages/settings_page.dart';
 import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_detail_provider.dart';
 import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_provider.dart';
 import 'package:submiss1_fundamental/restaurant/ui/provider/restaurant_search_rovider.dart';
 import 'package:submiss1_fundamental/restaurant/ui/screen/search_screen.dart';
 
+import 'restaurant/data/db/database_helper.dart';
+import 'restaurant/ui/provider/restaurant_favorite.dart';
 import 'restaurant/ui/screen/restaurant_detail.dart';
 import 'restaurant/ui/screen/restaurant_list.dart';
 
@@ -21,6 +25,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<FavoriteRestaurantProvider>(
+          create: (context) => FavoriteRestaurantProvider(
+            databaseHelper: DatabaseHelper(),
+          ),
+        ),
         ChangeNotifierProvider<RestaurantProvider>(
           create: (context) => RestaurantProvider(
             apiService: ApiService(),
@@ -46,6 +55,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const RestaurantList(),
           '/search': (context) => const SearchScreen(),
+          '/favorite': (context) => const FavoritePages(),
+          '/settings': (context) => const SettingsPages(),
           '/detailRestaurant': (context) => RestaurantDetail(
                 id: ModalRoute.of(context)?.settings.arguments as String,
               ),

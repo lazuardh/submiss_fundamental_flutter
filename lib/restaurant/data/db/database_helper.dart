@@ -16,41 +16,59 @@ class DatabaseHelper {
   Future<Database> _initializeDb() async {
     var path = await getDatabasesPath();
     var db = openDatabase(
-      '$path/restaurant.db',
+      '$path/restauran.db',
       onCreate: (db, version) async {
-        await db.execute('''CREATE TABLE $_tbFavorit (
+        try {
+          await db.execute('''CREATE TABLE $_tbFavorit (
               id TEXT PRIMARY KEY,
               name TEXT,
               description TEXT,
-              picturedId TEXT,
+              pictureId TEXT,
               city TEXT,
-              rating int,
-            )
-          ''');
+              rating REAL
+           )
+        ''');
+          print('Table $_tbFavorit created successfully');
+        } catch (e) {
+          print('Error creating table: $e');
+        }
       },
       version: 1,
     );
+
     return db;
   }
 
   Future<Database?> get database async {
-    if (_database == null) {
-      _database = await _initializeDb();
-    }
+    _database ??= await _initializeDb();
 
     return _database;
   }
 
-  Future<void> insertFavorite(Restaurant restaurant) async {
+  Future<void> insertFavorite(RestaurantElement restaurant) async {
     final db = await database;
+
+    print('Inserting restaurant with ID: ${restaurant.id} into bookmarks...');
+
     await db!.insert(_tbFavorit, restaurant.toJson());
+
+    // await db!.insert(_tbFavorit, {
+    //   'id': restaurant.id,
+    //   'name': restaurant.name,
+    //   'description': restaurant.description,
+    //   'city': restaurant.city,
+    //   'pictureId': restaurant.pictureId,
+    //   'rating': restaurant.rating,
+    // });
   }
 
-  Future<List<Restaurant>> getFavoriteRestaurant() async {
+  Future<List<RestaurantElement>> getFavoriteRestaurant() async {
     final db = await database;
     List<Map<String, dynamic>> results = await db!.query(_tbFavorit);
 
-    return results.map((response) => Restaurant.fromJson(response)).toList();
+    return results
+        .map((response) => RestaurantElement.fromJson(response))
+        .toList();
   }
 
   Future<Map> getFavoriteRestaurantById(String id) async {

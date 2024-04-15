@@ -39,9 +39,22 @@ class _RestaurantListState extends State<RestaurantList> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.pushNamed(context, '/search'),
-                icon: const Icon(Icons.search),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pushNamed(context, '/search'),
+                    icon: const Icon(Icons.search),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pushNamed(context, '/favorite'),
+                    icon: const Icon(Icons.favorite),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pushNamed(context, '/settings'),
+                    icon: const Icon(Icons.settings),
+                  ),
+                ],
               ),
             ),
             Text(
@@ -73,9 +86,13 @@ class _RestaurantListState extends State<RestaurantList> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.pushNamed(context, '/search'),
-                icon: const Icon(Icons.search),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pushNamed(context, '/search'),
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
               ),
             ),
             Text(
